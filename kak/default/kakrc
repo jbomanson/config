@@ -1,0 +1,59 @@
+map global insert å <esc>
+map global prompt å <esc>
+map global view å <esc>
+
+map global user a -docstring %(Select whole object) %(:select-custom-text-object-whole-mode<ret>)
+map global user c -docstring %(Copy to clipboard) %(<a-|>xclip -in -selection clipboard<ret>)
+map global user i -docstring %(Select inner object) %(:select-custom-text-object-inner-mode<ret>)
+map global user j -docstring %(Use the current client for jumps) %(:set global jumpclient %val{client}<ret>)
+map global user n -docstring %(Select nearby lines by prefix) %(:select-nearby-mode<ret>)
+map global user o -docstring %(Use the current client for tools) %(:set global toolsclient %val{client}<ret>)
+map global user s -docstring %(Send text) %(:send-text<ret>)
+map global user v -docstring %(Paste from clipboard) %(|xclip -out -selection clipboard<ret>)
+map global user W -docstring %(Wrap a sentence to 80 columns) %(:wrap-sentence<ret>)
+# map global user w -docstring %(Wrap text to 80 columns) %(|fmt --width=80<ret>)
+map global user w -docstring %(Wrap text to 80 columns) %(:wrap-complex<ret>)
+
+# colorscheme base16	# A good dark colourscheme with excellent visibility.
+# colorscheme github	# A very nice bright colourscheme that fails inside xterm.
+
+# Apply a colorscheme based on the time of day.
+def colorscheme-by-time-of-day \
+    -docstring "Pick a colorscheme based on the time of day" %{
+    %sh{
+        if [ $(date +%H) -lt 21 ]; then
+            echo 'colorscheme github'
+        else
+            echo 'colorscheme lucius'
+        fi
+    }
+}
+
+colorscheme-by-time-of-day
+
+# See https://github.com/alexherbo2/dotfiles/blob/master/kak/kakrc
+hook global BufCreate [*]grep[*] %{ map -- global normal - ':grep-next<ret>' }
+hook global BufCreate [*]make[*] %{ map -- global normal - ':make-next<ret>' }
+
+# See https://github.com/mawww/kakoune/wiki/How-To#use-ag-or-ack-as-the-grep-program
+set global grepcmd 'ag --column'
+
+# Show some number of context lines above and below the cursor.
+set global scrolloff 10,0
+
+hook global WinCreate .* %{addhl number_lines -relative -hlcursor}
+
+# See https://github.com/mawww/kakoune/wiki/How-To#expand-tabs-to-spaces-when-tab-is-pressed
+hook global WinSetOption tabstop=8 %{ rmhooks window misc-expand-tabs }
+hook global WinSetOption tabstop=(?!8) %{ hook -group misc-expand-tabs window InsertChar \t %{ exec -draft -itersel h@ } }
+
+# This creates a highlighter with the id "hlcol_81".
+add-highlighter -group / column 81 default,blue
+# hook -group sass-highlight global WinSetOption filetype=sass %{ add-highlighter ref sass }
+# hook -group sass-highlight global WinSetOption filetype=(?!sass).* %{ remove-highlighter sass }
+hook global WinSetOption filetype=(?!man).* %{add-highlighter ref hlcol_81}
+hook global WinSetOption filetype=(man|) %{remove-highlighter hlcol_81}
+
+alias global ag grep
+
+# BUG: The following does not include the last newline: xX<a-;>K

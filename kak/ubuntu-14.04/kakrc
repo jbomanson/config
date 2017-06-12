@@ -1,0 +1,29 @@
+map global insert å <esc>
+map global prompt å <esc>
+map global view å <esc>
+
+map global user c %(<a-|>xclip -in -selection clipboard<ret>)
+map global user v %(|xclip -out -selection clipboard<ret>)
+
+map global user s %(:send-text<ret>)
+
+# colorscheme base16	# A good dark colourscheme with excellent visibility.
+# colorscheme github	# A very nice bright colourscheme that fails inside xterm.
+
+# Apply a colorscheme based on the time of day.
+def colorscheme-by-time-of-day \
+    -docstring "Pick a colorscheme based on the time of day" %{
+    %sh{
+        if [ $(date +%H) -lt 21 ]; then
+            echo 'colorscheme github'
+        else
+            echo 'colorscheme lucius'
+        fi
+    }
+}
+
+colorscheme-by-time-of-day
+
+# See https://github.com/alexherbo2/dotfiles/blob/master/kak/kakrc
+hook global BufCreate [*]grep[*] %{ map -- global normal - ':grep-next<ret>' }
+hook global BufCreate [*]make[*] %{ map -- global normal - ':make-next<ret>' }
