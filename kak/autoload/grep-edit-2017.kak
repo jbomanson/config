@@ -26,7 +26,7 @@
 # define-command grep-edit-before \
 #   -docstring "Mark the beginning of changes to grep result lines.
 # The lines will be used when grep-edit-after is called." %(
-#     evaluate-commands -collapse-jumps -draft %(
+#     evaluate-commands -draft %(
 #         execute-keys -save-regs %() %(%y)
 #         edit -scratch %opt(greppatchbuffer)
 #         set-option buffer filetype ""
@@ -37,7 +37,7 @@
 # define-command grep-edit-diff \
 #     -docstring "Make a diff between the state before and since grep-edit-before
 # was called." %(
-#     evaluate-commands -try-client %opt(toolsclient) -collapse-jumps %(
+#     evaluate-commands -try-client %opt(toolsclient) %(
 #         # Copy nonempty "after" lines.
 #         execute-keys -save-regs %() %(%<a-s><a-k>..<ret>y)
 #         buffer %opt{greppatchbuffer}

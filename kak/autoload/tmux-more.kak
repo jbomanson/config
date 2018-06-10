@@ -52,7 +52,7 @@ declare-option str tmux_pipe_wait_command "bash -c 'read && read -t 2.0 && while
 define-command tmux-pipe \
     -docstring %(Send selection to the repl pane and capture the output) \
     %(
-        evaluate-commands -collapse-jumps -save-regs ld %(
+        evaluate-commands -save-regs ld %(
             # Save the current number of history lines.
             set-register l \
                 "%sh(tmux capture-pane -J -t \"$kak_opt_tmux_repl_pane_id\" -p -S- | wc -l)"
@@ -98,7 +98,7 @@ declare-option str tmux_pipe_async_history
 define-command tmux-pipe-async \
     -docstring %(Send selection to the repl pane and capture the output) \
     %(
-        evaluate-commands -collapse-jumps %(
+        evaluate-commands %(
             # Save the current number of history lines.
             set-option buffer tmux_pipe_async_history \
                 "%sh(tmux capture-pane -J -t \"$kak_opt_tmux_repl_pane_id\" -p -S- | wc -l)"
@@ -145,7 +145,7 @@ define-command tmux-pipe-async-callback \
 # define-command tmux-pipe \
 #     -docstring %(Send selection to the repl pane and capture the output) \
 #     %(
-#         evaluate-commands -collapse-jumps %(
+#         evaluate-commands %(
 #             nop %sh(tmux pipe-pane -t "$kak_opt_tmux_repl_pane_id" "cat >/tmp/kak-tmux-pipe")
 #             # nop %sh(tmux pipe-pane -t "$kak_opt_tmux_repl_pane_id" "sed -r \"$kak_opt_stripcolorsedscript\" >/tmp/kak-tmux-pipe")
 #             tmux-send-text
@@ -171,7 +171,7 @@ define-command tmux-pipe-async-callback \
 # define-command tmux-pipe \
 #     -docstring %(Send selection to the repl pane and capture the output) \
 #     %(
-#         evaluate-commands -collapse-jumps %(
+#         evaluate-commands %(
 #             %sh(tmux capture-pane -J -t "$kak_opt_tmux_repl_pane_id" -p >/tmp/kak-tmux-pipe-1.txt)
 #             tmux-send-text
 #             %sh{ sleep 0.5 }
@@ -187,7 +187,7 @@ define-command tmux-capture-pane \
     -hidden \
     -docstring %(Replace the selection with tmux repl pane contents) \
     %(
-        evaluate-commands -collapse-jumps %(
+        evaluate-commands %(
             # -J joins wrapped lines and preserves trailing spaces
             execute-keys %(
                 |tmux capture-pane -J -t "$kak_opt_tmux_repl_pane_id" -p<ret>
@@ -206,7 +206,7 @@ define-command tmux-send-and-capture \
     -docstring %(Send selection to the repl pane and capture and convert the
 output) \
     %(
-        evaluate-commands -collapse-jumps %(
+        evaluate-commands %(
             tmux-pipe
             convert-shell-output-to-input
         )
@@ -218,7 +218,7 @@ output) \
 #     -docstring %(Send selection to the repl pane and capture and convert the
 # output) \
 #     %(
-#         evaluate-commands -collapse-jumps %(
+#         evaluate-commands %(
 #             tmux-send-param "clear
 # "
 #             tmux-send-text
@@ -259,7 +259,7 @@ define-command tmux-shell-step \
     -docstring %(Send selection to the repl, capture and convert the output,
 step over it.) \
     %(
-        evaluate-commands -collapse-jumps %(
+        evaluate-commands %(
             tmux-send-and-capture
             execute-keys x
         )

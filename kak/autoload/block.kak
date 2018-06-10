@@ -85,7 +85,7 @@ define-command block-insert-multiline \
     -params 2 \
     -docstring %(Insert newlines and matching delimiters around selected text) \
     %(
-        evaluate-commands -collapse-jumps -itersel -no-hooks %(
+        evaluate-commands -itersel -no-hooks %(
             # Insert a delimiter above the current selection.
             execute-keys -save-regs "" "<a-x><a-:>Z<a-;>;<a-x>yPkgiGLa.<esc>d<a-x>yA%arg{1}<esc>"
             # Insert a delimiter below the current selection.

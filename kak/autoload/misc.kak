@@ -402,7 +402,7 @@ define-command -override evaluate-on-register \
     -docstring "evaluate-on-register <register> <commands>: Evaluate <commands>
 with the contents of <register> selected in a temporary buffer." \
     %(
-        evaluate-commands -collapse-jumps -draft -save-regs "" %(
+        evaluate-commands -draft -save-regs "" %(
             set-option global evaluate_on_register_id %sh(
                 echo "$kak_opt_evaluate_on_register_id" | md5sum | head -c32
             )
@@ -466,7 +466,7 @@ define-command prefix-lines-smart \
 with <string> unless all of them already are prefixed.) \
   -params 1 \
   %(
-      evaluate-commands -collapse-jumps -itersel %(
+      evaluate-commands -itersel %(
           try %(
               execute-keys "<a-x><a-k>^\\s*[^\\s%sh(echo $1)]<ret>"
               prefix-lines %arg(1)
@@ -527,7 +527,7 @@ define-command unprefix-nearby-lines \
   -docstring %(Unprefix nearby lines starting with a given string) \
   -params 1 \
   %(
-      evaluate-commands -collapse-jumps -draft %(
+      evaluate-commands -draft %(
           select-nearby-lines-by-prefix %arg(1)
           unprefix-lines %arg(1)
       )

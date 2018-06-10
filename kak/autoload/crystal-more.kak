@@ -64,14 +64,14 @@ define-command crystal-tool-format-file \
                     if printf "%s" "$kak_reg_v" \
                             | crystal tool format --no-color - >$output 2>&1
                     then
-                        echo "evaluate-commands -collapse-jumps %{
+                        echo "evaluate-commands %{
                             $common
                             buffer '$kak_bufname'
                             execute-keys '%\"vR'
                             select '$kak_selections_desc'
                         }"
                     else
-                        echo "evaluate-commands -collapse-jumps -draft %{
+                        echo "evaluate-commands -draft %{
                             $common
                             echo \
                                 -debug \
@@ -159,7 +159,7 @@ hook global BufNewFile .*\.cr _crystal-insert-class-or-describe
 
 define-command -docstring %(Comment and format selected text as an example section) \
     crystal-doc-example %(
-        evaluate-commands -collapse-jumps %(
+        evaluate-commands %(
             execute-keys -draft -no-hooks 'O# ### Example<ret>#'
             crystal-doc-code
         )
@@ -167,7 +167,7 @@ define-command -docstring %(Comment and format selected text as an example secti
 
 define-command -docstring %(Comment and format selected text as a code block) \
     crystal-doc-code %(
-        evaluate-commands -collapse-jumps %(
+        evaluate-commands %(
             prefix-lines-smart '# '
             execute-keys -no-hooks '<a-x>ZO# ```<esc>zo# ```<esc>z<a-:><a-;>K<a-x>'
             crystal-tool-format

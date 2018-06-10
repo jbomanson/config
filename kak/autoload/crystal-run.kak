@@ -70,7 +70,7 @@ define-command -params .. -file-completion \
 All the optional arguments are forwarded to the crystal run command.
 If no arguments are given, the current file is used as the argument.} \
     crystal-run %{
-    evaluate-commands -collapse-jumps %{
+    evaluate-commands %{
         %sh{
             if [ $# -eq 0 ]; then
                 if [ "${kak_bufname}" = '*crystal-run*' ]; then
@@ -136,7 +136,7 @@ hook -group crystal-run-highlight global WinSetOption filetype=crystal-run %{
 hook -group crystal-run-highlight global WinSetOption filetype=(?!crystal-run).* %{ remove-highlighter window/crystal-run }
 
 define-command crystal-run-repeat -docstring 'Repeat the most recent crystal-run call' %{
-    evaluate-commands -collapse-jumps -try-client %opt{toolsclient} %{
+    evaluate-commands -try-client %opt{toolsclient} %{
         buffer '*crystal-run*'
         crystal-run-header
     }

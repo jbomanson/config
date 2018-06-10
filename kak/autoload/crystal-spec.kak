@@ -17,7 +17,7 @@ All the optional arguments are forwarded to the crystal spec command.
 If no arguments are given, an attempt is made to heuristically pick a crystal
 spec file to be the target of the command.} \
     crystal-spec %{
-    evaluate-commands -collapse-jumps %{
+    evaluate-commands %{
         %sh{
             if [ $# -eq 0 ]; then
                 if [ "${kak_bufname}" = '*crystal-spec*' ]; then
@@ -124,7 +124,7 @@ define-command crystal-spec-alternative-file -docstring 'Jump to the test file' 
 declare-option str jumpclient
 
 define-command -hidden crystal-spec-jump %{
-    evaluate-commands -collapse-jumps %{
+    evaluate-commands %{
         try %{
             reg 3 ""
             try %{
@@ -154,7 +154,7 @@ define-command -hidden crystal-spec-jump %{
 }
 
 define-command crystal-spec-next -docstring 'Jump to the next crystal-spec match' %{
-    evaluate-commands -collapse-jumps -try-client %opt{jumpclient} %{
+    evaluate-commands -try-client %opt{jumpclient} %{
         buffer '*crystal-spec*'
         execute-keys "%opt{_crystalspec_current_line}g<a-l>/^[^:]+:\d+:<ret>"
         crystal-spec-jump
@@ -163,7 +163,7 @@ define-command crystal-spec-next -docstring 'Jump to the next crystal-spec match
 }
 
 define-command crystal-spec-prev -docstring 'Jump to the previous crystal-spec match' %{
-    evaluate-commands -collapse-jumps -try-client %opt{jumpclient} %{
+    evaluate-commands -try-client %opt{jumpclient} %{
         buffer '*crystal-spec*'
         execute-keys "%opt{_crystalspec_current_line}g<a-/>^[^:]+:\d+:<ret>"
         crystal-spec-jump
@@ -172,7 +172,7 @@ define-command crystal-spec-prev -docstring 'Jump to the previous crystal-spec m
 }
 
 define-command crystal-spec-repeat -docstring 'Repeat the most recent crystal-spec call' %{
-    evaluate-commands -collapse-jumps -try-client %opt{toolsclient} %{
+    evaluate-commands -try-client %opt{toolsclient} %{
         buffer '*crystal-spec*'
         crystal-spec-header
     }
