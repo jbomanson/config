@@ -397,7 +397,7 @@ into
 
 declare-option str evaluate_on_register_id "evaluate-on-register"
 
-define-command -allow-override evaluate-on-register \
+define-command -override evaluate-on-register \
     -params 2 \
     -docstring "evaluate-on-register <register> <commands>: Evaluate <commands>
 with the contents of <register> selected in a temporary buffer." \

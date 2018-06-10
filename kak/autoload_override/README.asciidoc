@@ -1,0 +1,2 @@
+Configuration files placed here will override those under ${kak_runtime}.
+This is handled by ../kakrc.

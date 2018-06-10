@@ -3,7 +3,7 @@ hook global WinSetOption filetype=c %{
   set-option window aligntab true
 }
 
-define-command -allow-override -hidden _c-family-insert-include-guards %{
+define-command -override -hidden _c-family-insert-include-guards %{
     %sh{
         case "${kak_opt_c_include_guard_style}" in
             ifdef)

@@ -9,8 +9,8 @@ hook global WinSetOption filetype=kak %{
 
 define-command -hidden kakrc-mode %{
   info -title %{Do kakrc specific operations} %{
-    e: Evaluate selection with -allow-override
-    p: Evaluate paragraph with -allow-override and -draft
+    e: Evaluate selection with -override
+    p: Evaluate paragraph with -override and -draft
   }
   on-key %{ %sh{
     case $kak_key in
@@ -28,8 +28,8 @@ define-command kak-evaluate-selection-simple \
 )
 
 define-command kak-evaluate-selection-override \
-    -allow-override \
-    -docstring "Evaluate selections with -allow-override" \
+    -override \
+    -docstring "Evaluate selections with -override" \
     %(
         evaluate-commands -itersel %(
             evaluate-commands -draft -save-regs "" %(
@@ -37,7 +37,7 @@ define-command kak-evaluate-selection-override \
                 evaluate-on-register '"' %(
                     try %(
                         execute-keys -draft \
-                            %(s^\h*define-command <ret>a-allow-override <esc>)
+                            %(s^\h*define-command <ret>a-override <esc>)
                     )
                 )
             )
@@ -47,7 +47,7 @@ define-command kak-evaluate-selection-override \
 
 define-command kak-evaluate-selection-override-paragraph \
     -hidden \
-    -docstring "Evaluate paragraph with -allow-override and -draft" \
+    -docstring "Evaluate paragraph with -override and -draft" \
     %(
         evaluate-commands -draft -itersel %(
             execute-keys <a-i>p

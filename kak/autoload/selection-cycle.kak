@@ -2,7 +2,7 @@
 # TODO: Add mappings that work in normal mode.
 
 map global normal <tab> %(:selection-cycle-next<ret>)
-map global normal <backtab> %(:selection-cycle-previous<ret>)
+map global normal <s-tab> %(:selection-cycle-previous<ret>)
 
 declare-option str-list selection_cycle_registers \
     a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z
@@ -107,11 +107,11 @@ define-command selection-cycle-number-previous \
 # <tab>
 #     The Tab key.
 # 
-# <backtab>
+# <s-tab>
 #     The reverse-tab key. This is Shift-Tab on most keyboards.
 #
 # TODO: Come up with commands to:
 # - Insert text.
 # - Resolve relative selection ranges.
-# - Set up a <tab> <backtab> cycle for given ranges.
+# - Set up a <tab> <s-tab> cycle for given ranges.
 # . Apply a range option as a selection.
