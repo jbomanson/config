@@ -29,8 +29,6 @@ hook global KakBegin .* %{
 declare-option str tmux_repl_window_id
 declare-option str tmux_repl_pane_id
 
-# MODIFIED 2018-04-28: Use kak options instead of tmux buffers.
-# MODIFIED 2018-04-28: Use window_id and pane_id.
 define-command -hidden -params 1..2 tmux-repl-impl %{
     %sh{
         if [ -z "$TMUX" ]; then
@@ -41,18 +39,9 @@ define-command -hidden -params 1..2 tmux-repl-impl %{
         shift
         tmux_cmd="$@"
         tmux $tmux_args $tmux_cmd
-        tmux set-buffer -b kak_repl_window $(tmux display-message -p '#I')
-        tmux set-buffer -b kak_repl_pane $(tmux display-message -p '#P')
-        tmux set-buffer -b kak_repl_window_id $(tmux display-message -p '#{window_id}')
-        tmux set-buffer -b kak_repl_pane_id $(tmux display-message -p '#{pane_id}')
-        window_id="$(tmux display-message -p '#{window_id}')"
-        pane_id="$(tmux display-message -p '#{pane_id}')"
-        printf '%s\n' "
-            evaluate-commands -client $kak_client %(
-                set-option window tmux_repl_window_id '$window_id'
-                set-option window tmux_repl_pane_id '$pane_id'
-            )
-        " | kak -p "$kak_session"
+        session_id=$(tmux display-message -p '#{session_id}')
+        tmux set-buffer -b "kak_repl_${session_id}_window_id" $(tmux display-message -p '#{window_id}')
+        tmux set-buffer -b "kak_repl_${session_id}_pane_id"   $(tmux display-message -p '#{pane_id}')
     }
 }
 
@@ -68,17 +57,17 @@ define-command tmux-repl-window -params 0..1 -command-completion -docstring "Cre
     tmux-repl-impl 'new-window' %arg{@}
 }
 
-# MODIFIED 2018-04-28: Use window_id and pane_id.
 define-command -hidden tmux-send-text -docstring "Send the selected text to the repl pane" %{
     nop %sh{
         tmux set-buffer -b kak_selection "${kak_selection}"
-        kak_orig_window_id=$(tmux display-message -p '#{window_id}')
-        kak_orig_pane_id=$(tmux display-message -p '#{pane_id}')
-        tmux select-window -t "$kak_opt_tmux_repl_window_id"
-        tmux select-pane -t "$kak_opt_tmux_repl_pane_id"
-        tmux paste-buffer -b kak_selection
-        tmux select-window -t "${kak_orig_window_id}"
-        tmux select-pane -t "${kak_orig_pane_id}"
+        original_window_id=$(tmux display-message -p '#{window_id}')
+        original_pane_id=$(tmux display-message -p '#{pane_id}')
+        session_id=$(tmux display-message -p '#{session_id}')
+        tmux select-window -t "$(tmux show-buffer -b "kak_repl_${session_id}_window_id")"
+        tmux select-pane   -t "$(tmux show-buffer -b "kak_repl_${session_id}_pane_id")"
+        tmux paste-buffer  -b kak_selection
+        tmux select-window -t "${original_window_id}"
+        tmux select-pane   -t "${original_pane_id}"
     }
 }
 
