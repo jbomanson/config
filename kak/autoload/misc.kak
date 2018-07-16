@@ -781,7 +781,7 @@ declare-option \
 # selected.
 define-command wrap-with-ruby \
     %(
-        evaluate-commands %(
+        evaluate-commands -itersel %(
             %sh(
                 output=$(mktemp -d -t wrap-with-ruby.XXXXXXXX)/file
                 ruby -e '
