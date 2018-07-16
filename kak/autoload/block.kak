@@ -114,7 +114,7 @@ define-command block-insert-pair-inclusive \
         )
     )
 
-define-command peel-matching-delmiters \
+define-command peel-matching-delimiters \
     -docstring %(Turn strings such as abc{xyz{uvw}} into xyz{uvw}) \
     %{
         try %{
