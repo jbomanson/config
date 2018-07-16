@@ -56,7 +56,6 @@ define-command snippet-bash-if-test-exit \
         selection-cycle-from-selections
     )
 
-# TODO: Put both programs in the same selection.
 define-command snippet-bash-unless-which \
     %(
         execute-keys -save-regs '' \
@@ -101,4 +100,50 @@ define-command snippet-bash-if-then-else \
         selection-cycle-from-selections
     )
 
+define-command snippet-bash-usage \
+    %(
+        execute-keys -save-regs '' \
+            %(oif test $# -ne argument_count; then<esc>) \
+            %(o  echo "usage: ${0##*/} expected_arguments"<esc>) \
+            %(o  exit 1<esc>) \
+            %(ofi >&2<esc>) \
+            %(Z<a-?>if<ret><a-;>sargument_count|expected_arguments<ret><a-z>a)
+        selection-cycle-from-selections
+    )
 
+define-command snippet-cpp-class \
+    %(
+        execute-keys -save-regs '' \
+        %(\o// Description.<esc>) \
+        %(\oclass Name {<esc>) \
+        %(\o public:<esc>) \
+        %(\o  members;<esc>) \
+        %(\o<esc>) \
+        %(\o private:<esc>) \
+        %(\o  members;<esc>) \
+        %(\o};<esc>) \
+        %(Z<a-?>//<ret><a-;>sDescription|Name|members<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-map-find \
+    %(
+        execute-keys -save-regs '' \
+        %(oauto key_value_pair = map.find(key);<esc>) \
+        %(oif (key_value_pair == map.end()) {<esc>) \
+        %(omissing_branch;<esc>) \
+        %(o}<esc>) \
+        %(Z<a-?>auto<ret><a-;>smap|\bkey\b|missing_branch<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-transform \
+    %(
+        execute-keys -save-regs '' \
+        %[ostd::transform(input.begin(), input.end(),<esc>] \
+        %[ostd::back_inserter(output), [](const Element& element) {<esc>] \
+        %[oreturn element;<esc>] \
+        %[o})<esc>] \
+        %(Z<a-?>transform<ret><a-;>sinput|output|Element|element<ret><a-z>a)
+        selection-cycle-from-selections
+    )
