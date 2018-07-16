@@ -5,6 +5,7 @@ define-command -hidden character-mode %{
     on-key %(
         set-option current character_mode_character "%val(key)"
         character-follow-up-mode
+        set-option current character_mode_character ""
     )
 }
 
