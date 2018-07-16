@@ -24,6 +24,7 @@ map global user t -docstring "Do a general operation"                        %(:
 map global user W -docstring "Wrap a sentence to 80 columns"                 %(:wrap-sentence<ret>)
 map global user w -docstring "Wrap text to 80 columns"                       %(:wrap-with-ruby<ret>)
 map global user d -docstring "Make a commented duplicate paragraph"          %(Z<a-a>py<a-p><a-;><a-i>p,lic<a-a>p"dZz)
+map global user q -docstring "Run sort | uniq on a paragraph"                %(Z<a-i>p|sort<space>|<space>uniq<ret>z)
 
 # Source: github user lenormf in a comment to https://github.com/mawww/kakoune/issues/1272
 map global user '/'     -docstring "case insensitive search"                 /(?i)
