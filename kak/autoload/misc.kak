@@ -653,19 +653,6 @@ define-command select-paragraph-and-indent \
         )
     )
 
-# define-command select-paragraph-and-indent \
-#     %(
-#         evaluate-commands %(
-#             execute-keys -save-regs '' '<a-i>pZ<a-;>;'
-#             set-register dquote ''
-#             try %( execute-keys -save-regs '' '<a-i><space>y' )
-#             try %(
-#                 execute-keys -draft '?^<c-r>"\s.*?^<c-r>"\S.*?\n<ret><a-z>u'
-#                 execute-keys '?^<c-r>"\s.*?^<c-r>"\S.*?\n<ret><a-z>u'
-#             )
-#         )
-#     )
-
 define-command -hidden select-indent-and-some-whole %{
     execute-keys '<a-a>i<a-;>K<a-;><a-x>X'
     evaluate-commands -save-regs ^ %{
@@ -744,37 +731,6 @@ define-command set-register-to-file-newline \
         )
     )
 
-# # BUG: This chomps all newlines from the end.
-# define-command set-register-to-file \
-#     -params 2 \
-#     -docstring "set-register-to-file <name> <file>: set-option register <name> to the contents of <file> on disk" \
-#     %(
-#         set-register "%arg(1)" "%sh(cat \"$2\")"
-#     )
-
-# # BUG: This may lose the last newline.
-# # This is slightly complex because there are three special cases that need to
-# # be taken care of.
-# # 1. The file ends in a newline.
-# # 2. The file ends in a non-newline character.
-# # 3. The file is empty.
-# define-command set-register-to-file \
-#     -params 2 \
-#     -docstring "set-register-to-file <name> <file>: set-option register <name> to the contents of <file> on disk" \
-#     %(
-#         evaluate-commands -draft -save-regs '' %(
-#             edit! -scratch *set-register-to-file*
-#             execute-keys "!cat '%arg(2)'<ret>"
-#             try %(
-#                 execute-keys -draft '%<a-k>..<ret>'
-#                 execute-keys -save-regs '' "<a-/>.<ret>GG\"%arg(1)y"
-#             ) catch %(
-#                 set-register "%arg(1)" ''
-#             )
-#             delete-buffer *set-register-to-file*
-#         )
-#     )
-
 # BUG: The obtained value will always end in a newline.
 define-command set-register-to-file-no-remove \
     -params 2 \
@@ -791,23 +747,6 @@ of <file> on disk) \
             }"
         }
     }
-
-# define-command set-register-to-file \
-#     -params 2 \
-#     -docstring %(set-register-to-file <name> <file>: set-option register <name> to the contents
-# of <file> on disk) \
-#     %{
-#         %sh{
-#             name="$1"
-#             file="$2"
-#             printf %s\\n "evaluate-commands -draft -save-regs '' %{
-#                 edit! -debug "$file"
-#                 execute-keys -save-regs '' '%\"${name}y'
-#                 delete-buffer! "$file"
-#                 nop %sh{ rm -r $(dirname "$file") }
-#             }"
-#         }
-#     }
 
 define-command wrap-sentence \
     %(
@@ -870,54 +809,6 @@ define-command wrap-with-ruby \
             )
         )
     )
-
-# # NOTE: This broke after some kak update.
-# define-command wrap-complex \
-#     %(
-#         evaluate-commands -itersel -no-hooks -save-regs %("bkmw) %(
-#             reg b %val(bufname)
-#             reg k %opt(autowrap_column)
-#             reg m %()
-#             execute-keys <a-x>
-#             execute-keys -save-regs %() y
-#             edit -scratch *wrap-complex*
-#             execute-keys R
-#             try %(
-#                 # Extract a prefix from the first line.
-#                 execute-keys -draft %(<a-s>'<space>s^\s*(%+|#+|//+|\*+|-+|)\s*<ret><a-k><space><ret>"my)
-#                 # Remove the prefix from all of the lines.
-#                 execute-keys -draft %(s^\Q<c-r>m\E<ret>d)
-#             )
-#             # Compute the desired width.
-#             edit -scratch *wrap-complex-size*
-#             execute-keys %("m<a-P>rxAy<esc>y) %reg(k) (pgh) %reg(k) (lGLd)
-#             try %( execute-keys %(xsx<ret>d) )
-#             execute-keys %(gl)
-#             reg w %val{cursor_char_column}
-#             db!
-#             buffer *wrap-complex*
-#             # Join the lines.
-#             execute-keys %(<a-j>)
-#             # Squeeze spaces.
-#             try %( execute-keys %(Zs +<ret>c<space><esc>z) )
-#             # Wrap the selection.
-#             execute-keys %(|fold --spaces --width=<c-r>w<ret>)
-#             # Add prefixes back.
-#             execute-keys %(<a-s>gh"m<a-P>)
-#             # Remove any non-comment prefixes.
-#             without-secondary-prefix
-#             # try %( execute-keys %('<a-space>s\*|-<ret>r<space>) )
-#             # Remove trailing spaces.
-#             try %(
-#                 execute-keys %(%s<space>+$<ret>)
-#                 execute-keys d
-#             )
-#             execute-keys -save-regs %() %(%y)
-#             db!
-#             buffer %reg(b)
-#             execute-keys R
-#         )
-#     )
 
 define-command write-make \
     -docstring %(Write and make) \

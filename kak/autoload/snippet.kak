@@ -79,7 +79,6 @@ define-command snippet-bash-for \
         selection-cycle-from-selections
     )
 
-
 define-command snippet-bash-if \
     %(
         execute-keys -save-regs '' \

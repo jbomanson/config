@@ -87,31 +87,3 @@ define-command selection-cycle-number-previous \
 #===============================================================================
 
 # See snippet.kak
-
-#===============================================================================
-# OLD
-#===============================================================================
-
-# HMMMM. After thinking about this, I think that it would be better to not
-# use up registers for selections that are used by commands.
-
-# declare-option str-list selection_cycle_registers \
-#     a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z
-# 
-# define-command selection-cycle-set-registers \
-#     -params .. \
-#     %(
-#         set-option global selection_cycle_registers
-#     )
-
-# <tab>
-#     The Tab key.
-# 
-# <s-tab>
-#     The reverse-tab key. This is Shift-Tab on most keyboards.
-#
-# TODO: Come up with commands to:
-# - Insert text.
-# - Resolve relative selection ranges.
-# - Set up a <tab> <s-tab> cycle for given ranges.
-# . Apply a range option as a selection.
