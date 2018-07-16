@@ -10,9 +10,7 @@ declare-option str-list selection_cycle_registers \
 declare-option int selection_cycle_number 1
 declare-option int selection_cycle_count 0
 
-# TODO: Add an option to specify group sizes for selections so that e.g. the
-# first selection could contain 2 selections, the second one 1 selection, etc.
-# TODO: Allow selections to be in arbitrary orders.
+# NOTE: The selections are sorted for now for convenience.
 define-command selection-cycle-from-selections \
     %(
         evaluate-commands -save-regs ^ %(
@@ -20,15 +18,32 @@ define-command selection-cycle-from-selections \
             echo
             %sh(
                 ruby -e '
-                  caret, registers = ARGV
+                  def sort_descs(descs)
+                    descs.sort_by do |position_pair|
+                      position_pair.split(",").first.split(".").map(&:to_i)
+                    end
+                  end
+                  caret, registers, selections = ARGV
                   registers = registers.split(":")
-                  selections, buffer = caret.split("@")
+                  descs, buffer = caret.split("@")
+                  # These seem to come in various orders.
+                  descs = descs.split(":")
+                  descs = sort_descs(descs)
+                  # These seem to be sorted by position.
                   selections = selections.split(":")
-                  selections.zip(registers).each do |sel, reg|
+                  # Group selection descriptions by their content.
+                  descs =
+                    descs
+                    .zip(selections)
+                    .group_by(&:last)
+                    .values
+                    .map {|pairs| sort_descs(pairs.map(&:first)).join(":")}
+                  descs = sort_descs(descs)
+                  descs.zip(registers).each do |sel, reg|
                     puts "set-register '"'"'#{reg}'"'"' #{sel}@#{buffer}\n"
                   end
-                  puts "set-option global selection_cycle_count #{selections.size}"
-                ' "$kak_reg_caret" "$kak_opt_selection_cycle_registers"
+                  puts "set-option global selection_cycle_count #{descs.size}"
+                ' "$kak_reg_caret" "$kak_opt_selection_cycle_registers" "$kak_selections"
             )
             selection-cycle-begin
         )
