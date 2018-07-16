@@ -703,7 +703,7 @@ define-command set-register-to-file \
                     printf %s\\n 'set-register "%arg(1)" ""'
                 fi
             else
-                # The file does not available for reading.
+                # The file is not available for reading.
                 printf %s\\n 'set-register "%arg(1)" ""'
                 printf %s\\n "Failed to read file '$file'" >&2
             fi
@@ -712,7 +712,7 @@ define-command set-register-to-file \
 
 declare-option -hidden str set_register_to_file_newline_tmp
 
-# This command handles case 1. in set-register-to-file.
+# This command handles case 1. of set-register-to-file.
 define-command set-register-to-file-newline \
     -hidden \
     -params 2 \
