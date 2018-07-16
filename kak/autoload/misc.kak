@@ -85,6 +85,7 @@ define-command -hidden system-clipboard-mode %(
 define-command -hidden tmux-clipboard-mode %(
   info -title "Do a tmux buffer(=clipboard) operation" "
     c,y:   Yank the selection to the clipboard
+    f:     Yank the full path of the current buffer to the clipboard.
     p:     Insert clipboard contents after the selection
     P:     Insert clipboard contents before the selection
     v,R,|: Replace the selection with clipboard contents
@@ -92,11 +93,17 @@ define-command -hidden tmux-clipboard-mode %(
   on-key %( %sh(
     case $kak_key in
       ('c' | 'y') echo "execute-keys %(<a-|>tmux load-buffer -<ret>)" ;;
+      ('f') echo "tmux-clipboard-mode-yank-buffile" ;;
       ('p') echo "execute-keys %(<a-!>tmux show-buffer<ret>)" ;;
       ('P') echo "execute-keys %(!tmux show-buffer<ret>)" ;;
       ('v' | 'R' | '|') echo "util-pipe tmux show-buffer" ;;
     esac
   ) )
+)
+
+define-command -hidden tmux-clipboard-mode-yank-buffile %(
+    nop %sh(printf "%s" "$kak_buffile" | tmux load-buffer -)
+    echo "%val(buffile)"
 )
 
 define-command repl-related-mode \
