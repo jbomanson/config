@@ -598,14 +598,32 @@ define-command select-nearby-lines \
     %(
         evaluate-commands -save-regs jbwkl %(
             try %(
-                execute-keys -draft %("jZ<a-i>p<a-s>"lZ<a-k>) %arg{1} %(<ret>)
-                execute-keys %("lz<a-K>) %arg{1} %(<ret><a-m>H"kd"bZ"jz<a-i>p"wZ"bzaa<esc>h"kR"wz)
+                execute-keys -draft "<a-i>p<a-s><a-k>%arg(1)<ret><a-m>"
+                execute-keys "<a-i>p<a-s><a-k>%arg(1)<ret><a-m>"
                 echo
             ) catch %(
-                echo -markup '{Error}Failed to select lines matching %arg{1}'
+                echo -markup "{Error}Failed to select lines matching %arg(1)"
             )
         )
     )
+
+# NOTE: This stopped working at some point. The reason might be the use of
+# multiple arguments to execute-keys.
+# NOTE: I no longer remember why this is so complicated.
+# define-command select-nearby-lines \
+#     -docstring %{select-nearby-lines <string>: Select nearby lines containing <string>} \
+#     -params 1 \
+#     %(
+#         evaluate-commands -save-regs jbwkl %(
+#             try %(
+#                 execute-keys -draft %("jZ<a-i>p<a-s>"lZ<a-k>) %arg{1} %(<ret>)
+#                 execute-keys %("lz<a-K>) %arg{1} %(<ret><a-m>H"kd"bZ"jz<a-i>p"wZ"bzaa<esc>h"kR"wz)
+#                 echo
+#             ) catch %(
+#                 echo -markup "{Error}Failed to select lines matching %arg{1}"
+#             )
+#         )
+#     )
 
 # NOTE: See ../kakrc and "map global object ..." commands.
 define-command -hidden select-custom-text-object-whole-mode %{
