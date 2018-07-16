@@ -9,7 +9,7 @@ map global view § <c-r>
 map global user a -docstring "Select whole object"                           %(:select-custom-text-object-whole-mode<ret>)
 map global user b -docstring "Do a block action"                             %(:block-mode<ret>)
 map global user c -docstring "Do a character based action"                   %(:character-mode<ret>)
-map global user %(%) -docstring "Select in this file"                        %(:select-all-in-file-mode<ret>)
+map global user %(%) -docstring "Select all copies of the current selection" %(:select-all-copies<ret>)
 # map global user f -docstring "Do a character based find action"              %(:find-mode<ret>)
 map global user g -docstring "A placeholder for language specific shortcuts" %(:info "Filetype %opt{filetype} lacks g shortcuts"<ret>)
 map global user i -docstring "Select inner object"                           %(:select-custom-text-object-inner-mode<ret>)
@@ -77,3 +77,5 @@ define-command ag -params .. %(with-selection-by-default grep %arg(@))
 # TODO: Add rc/clipboard.kak and put xclip & tmux based copying in there.
 # Make them unified in a similar way as is done in rc/block.kak.
 #
+
+define-command select-all-copies %(execute-keys %(y%s\Q<c-r>"\E<ret>))

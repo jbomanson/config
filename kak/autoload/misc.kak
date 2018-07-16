@@ -546,17 +546,6 @@ define-command unprefix-nearby-lines-heuristic \
         )
     )
 
-define-command select-all-in-file-mode %{
-  info -title %{Select in this file all matches of} %{
-    .: selection contents
-  }
-  on-key %{ %sh{
-    case $kak_key in
-      '.') echo execute-keys 'y%s<c-r>"<ret>' ;;
-    esac
-  }
-}}
-
 define-command -hidden select-nearby-mode %{
   info -title %{Select nearby lines prefixed by} %{
     a: a heuristically chosen prefix
