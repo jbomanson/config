@@ -3,3 +3,6 @@ set-option global grepcmd 'ag --column'
 
 # Show some number of context lines above and below the cursor.
 set-option global scrolloff 10,0
+
+# TODO: Explain
+set-option global browse_doc_viewer el

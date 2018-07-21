@@ -8,6 +8,8 @@ hook global WinSetOption filetype=crystal %{
 
     hook -group crystal-tool buffer BufWritePost '.*' crystal-doc-if-exists
     hook -group crystal-tool buffer BufWritePre '.*' crystal-tool-format-file
+
+    set-option window browse_doc_url_suffix "#main-content"
 }
 
 #===============================================================================
