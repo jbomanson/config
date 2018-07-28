@@ -19,3 +19,7 @@ this repository.
 
 Move the contents of the fish subdirectory from this repository under
 ~/.config/fish.
+
+### tmux configuration files
+
+Make ~/.tmux.conf a soft link to the tmux/tmux.conf file from this subdirectory.
