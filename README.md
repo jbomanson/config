@@ -6,8 +6,14 @@ Some configuration files that I use
 
 ### kak configuration files
 
-Assuming you have kak installed at /some/path/bin/kak, move the kak
-subdirectory from this repository to /some/path/share/kak.
+To find out where Kakoune looks to find configuration files, type:
+
+```
+echo %val(config)
+```
+
+Then, for example, make that directory a soft link to the kak subdirectory from
+this repository.
 
 ### fish configuration files
 
