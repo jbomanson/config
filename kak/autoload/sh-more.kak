@@ -19,7 +19,6 @@ define-command -hidden sh-mode %{
     l: Lint the file with %opt(lintcmd)
   "
   on-key %{ %sh{
-      echo "$kak_key" >> /tmp/vvv.txt
     case $kak_key in
       ('\') echo bash-shell-escape ;;
       ('f') echo bash-format-function ;;
@@ -30,7 +29,7 @@ define-command -hidden sh-mode %{
 }}
 
 define-command bash-format-function \
-    -docstring "Formats and orders selected bash functions." \
+    -docstring "Format and order selected bash functions" \
     %(
         util-pipe bash -c '
             noise=$(compgen -A function)
@@ -45,7 +44,7 @@ define-command bash-format-function \
 # This function works by wrapping selected text into an ad hock bash function,
 # formatting that bash function, and then removing it. 
 define-command bash-format-function-body \
-    -docstring "Formats selected text." \
+    -docstring "Format selected text" \
     %(
         evaluate-commands -itersel %(
             execute-keys <a-x>
@@ -54,14 +53,6 @@ define-command bash-format-function-body \
                 bash-format-function
                 # Peel off the top level function.
                 util-pipe bash -c 'head -n-1 | tail -n+3'
-                # Peel off the top level function.
-                # earlier-version {
-                # execute-keys 'Zs\s*^\}\s*<ret>Hdzs.*\{\r?\n<ret>dz'
-                # }
-                # earlier-version (
-                # NOTE: \Z stopped working in e9e3dc8
-                # execute-keys 'Zs\s*\}\s*\Z<ret>Hdzs\A[^{]*\{\r?\n<ret>dz'
-                # )
                 # Reduce indentation by four.
                 execute-keys -draft 's^ {4}<ret>d'
             )
@@ -69,7 +60,7 @@ define-command bash-format-function-body \
     )
 
 define-command bash-shell-escape \
-    -docstring "Escape selected text for a shell." \
+    -docstring "Escape selected text for a shell" \
     %(
         util-pipe ruby -e 'require "shellwords"; print STDIN.read.shellescape'
     )
