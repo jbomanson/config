@@ -1,0 +1,100 @@
+#! /bin/bash
+
+# TODO: Write some high level documentation.
+# TODO: Be less restrictive in matching file names.
+
+# <file>:<line>:<column>: <type>: <message>
+
+kak_buflist="$1"
+kak_client="$2"
+kak_timestamp="$3"
+
+# Form a regex that matches any one of the files in kak_buflist.
+buffer_regex="(\Q$(echo "$kak_buflist" | sed 's/:/\\E|\\Q/g')\E)"
+
+# Form a regex that matches lines of the form
+# sourcefile:lineno:column: message
+# where sourcefile is one of the files in $kak_buflist.
+
+find_regex="\b$buffer_regex:\d+(:\d+)?: .*\S"
+prompt_regex="^$(hostname) .*> "
+big_number=10000
+
+# Return matches of $find_regex after the last line that
+# - matches $prompt_regex and
+# - after which there are one or more lines that match $find_regex.
+function grep_pane {
+    grep -P -o "$find_regex|$prompt_regex" \
+    | grep -P -B "$big_number" "$find_regex" \
+    | tac \
+    | grep -B "$big_number" -m 1 "$prompt_regex" \
+    | head -n-1 \
+    | tac
+}
+
+function grep_all_panes {
+    for window in $(tmux list-windows -F "#{window_id}")
+    do
+        for pane in $(tmux list-panes -t "$window" -F "#{pane_id}")
+        do
+            tmux capture-pane -J -t "$pane" -p -S- | grep_pane
+        done
+    done # | tee /tmp/pane-contents.txt
+}
+
+# Group compiler findings by file and print the grouped findings in a format
+# that is easy to parse.
+function group_and_preprocess_findings {
+    ruby -e '
+        STDIN.readlines.uniq.group_by {|line| line[/^[^:]*/]}.each do |file, notes|
+          puts "file"
+          notes.
+            sort_by {|note| note.split(":")[1].to_i}.
+            each {|note| puts "note #{note}"}
+          puts "endfile:#{file}"
+        end
+    '
+}
+
+function transform_grouped_findings_to_kak_commands {
+    awk -F: -v stamp="$kak_timestamp" -v client="$kak_client" '
+        # Flags for the gutter:
+        #   stamp:l3|{red}█:l11|{yellow}█
+        # Contextual error messages:
+        #   stamp:l1.c1,l1.c1|kind\:message:l2.c2,l2.c2|kind\:message
+        /^file/ {
+            error_count = 0
+            warning_count = 0
+        }
+        /:[0-9]+:[0-9]+: ([Ff]atal )?[Ee]rror/ {
+            flags = flags ":" $2 "|{red}█"
+            error_count++
+        }
+        /:[0-9]+:[0-9]+:/ {
+            if ($4 !~ /[Ee]rror/) {
+                flags = flags ":" $2 "|{yellow}█"
+                warning_count++
+            }
+        }
+        /^note .*:[0-9]+:[0-9]+:/ {
+            kind = substr($4, 2)
+            errors = errors ":" $2 "." $3 "," $2 "." $3 "|" kind
+            # fix case where $5 is not the last field because of extra colons in the message
+            for (i=5; i<=NF; i++) errors = errors "\\:" $i
+            errors = errors " (col " $3 ")"
+        }
+        /^endfile:/ {
+            file = $2
+            print "set-option \"buffer=" file "\" lint_flags  %{" stamp flags "}"
+            gsub("~", "\\~", errors)
+            print "set-option \"buffer=" file "\" lint_errors %~" stamp errors "~"
+            print "set-option \"buffer=" file "\" lint_error_count " error_count
+            print "set-option \"buffer=" file "\" lint_warning_count " warning_count
+            print "evaluate-commands -client " client " lint-show-counters"
+        }
+    '
+}
+
+grep_all_panes \
+    | group_and_preprocess_findings \
+    | transform_grouped_findings_to_kak_commands
