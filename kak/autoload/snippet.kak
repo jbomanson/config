@@ -126,7 +126,16 @@ define-command snippet-cpp-class \
         selection-cycle-from-selections
     )
 
-define-command snippet-cpp-map-find \
+define-command snippet-cpp-algorithm-copy \
+    %(
+        execute-keys -save-regs '' \
+        %[ostd::copy(input.begin(), input.end(),<esc>] \
+        %[ostd::back_inserter(output));<esc>] \
+        %(Z<a-?>copy<ret><a-;>sinput|output<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-map-find \
     %(
         execute-keys -save-regs '' \
         %(oauto key_value_pair = map.find(key);<esc>) \
@@ -137,13 +146,88 @@ define-command snippet-cpp-map-find \
         selection-cycle-from-selections
     )
 
-define-command snippet-cpp-transform \
+define-command snippet-cpp-algorithm-sort \
+    %(
+        execute-keys -save-regs '' \
+        %[ostd::sort(input.begin(), input.end(),<esc>] \
+        %[o[](const Element& a, const Element& b) {<esc>] \
+        %[oreturn a.property() <lt> b.property();<esc>] \
+        %[o});<esc>] \
+        %(Z<a-?>sort<ret><a-;>sinput|Element|property\(\)|<lt><ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-unique \
+    %(
+        execute-keys -save-regs '' \
+        %[oinput.erase(<esc>] \
+        %[ostd::unique(input.begin(), input.end(),<esc>] \
+        %[o[](const Element& a, const Element& b) {<esc>] \
+        %[oreturn a.property() == b.property();<esc>] \
+        %[o}), std::end(input));<esc>] \
+        %(Z<a-?>input\.erase<ret><a-;>sinput|Element|property\(\)|==<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-merge \
+    %(
+        execute-keys -save-regs '' \
+        %[ostd::merge(input_one.begin(), input_one.end(),<esc>] \
+        %[oinput_two.begin(), input_two.end(),<esc>] \
+        %[ostd::back_inserter(output));<esc>] \
+        %(Z<a-?>merge<ret><a-;>sinput_one|input_two|output<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-remove-if \
+    %(
+        execute-keys -save-regs '' \
+        %[oinput.erase(<esc>] \
+        %[ostd::remove_if(input.begin(), input.end(),<esc>] \
+        %[o[](const Element& element) {<esc>] \
+        %[oreturn element;<esc>] \
+        %[o}), std::end(input));<esc>] \
+        %(Z<a-?>input\.erase<ret><a-;>sinput|Element|element<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-remove-if-without-remove-if \
+    %(
+        execute-keys -save-regs '' \
+        %[ofor (auto it = collection.begin(); it != collection.end();) {<esc>] \
+        %[oif (condition(*it)) {<esc>] \
+        %[ocollection.erase(it++);<esc>] \
+        %[o} else {<esc>] \
+        %[o++it;<esc>] \
+        %[o}<esc>] \
+        %[o}<esc>] \
+        %(Z<a-?>for<ret><a-;>scollection|condition<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+# In C++11, erase should return an iterator to the next element, so this should
+# work.
+# define-command snippet-cpp-algorithm-remove-if-without-remove-if \
+#     %(
+#         execute-keys -save-regs '' \
+#         %[ofor (auto it = collection.begin(); it != collection.end();) {<esc>] \
+#         %[oif (condition(*it)) {<esc>] \
+#         %[oit = collection.erase(it);<esc>] \
+#         %[o} else {<esc>] \
+#         %[o++it;<esc>] \
+#         %[o}<esc>] \
+#         %[o}<esc>] \
+#         %(Z<a-?>for<ret><a-;>scollection|condition<ret><a-z>a)
+#         selection-cycle-from-selections
+#     )
+
+define-command snippet-cpp-algorithm-transform \
     %(
         execute-keys -save-regs '' \
         %[ostd::transform(input.begin(), input.end(),<esc>] \
         %[ostd::back_inserter(output), [](const Element& element) {<esc>] \
         %[oreturn element;<esc>] \
-        %[o})<esc>] \
+        %[o});<esc>] \
         %(Z<a-?>transform<ret><a-;>sinput|output|Element|element<ret><a-z>a)
         selection-cycle-from-selections
     )
