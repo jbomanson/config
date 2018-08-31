@@ -1,0 +1,15 @@
+#! /bin/bash
+
+function grep_current_pane {
+    tmux capture-pane -J -p -S- | tac | grep -P -m 2 '^    Which is: "' | tac | grep -P -o '".*"\s*$' | sed -E 's/^"|"\s*$//g'
+}
+
+function process {
+    sed 's/\\n/\n/g; s/\\t/\t/g'
+}
+
+lines="$(grep_current_pane)"
+echo "$lines" | head -n1 | process >/tmp/which_is_head.txt
+echo "$lines" | tail -n1 | process >/tmp/which_is_tail.txt
+
+exec vimdiff /tmp/which_is_head.txt /tmp/which_is_tail.txt
