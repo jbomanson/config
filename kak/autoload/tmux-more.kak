@@ -17,6 +17,27 @@
 # # I think it would be more useful to use this than window_id + pane thingy.
 # tmux display-message -p -t '%9' "#{pane_id}"
 
+# Make it so that a pane is in default mode as opposed to copy mode.
+# tmux copy-mode -t '@1' ';' send-keys -t '@1' -X cancel
+#
+# Send keys to a window from kak.
+# nop %sh(tmux send-keys -t "@1" "echo Hello world" Enter)
+#
+# Print hello world twice in a tmux pane from kak.
+# nop %sh(tmux send-keys -t "@1" "echo Hello world" Enter Up Enter)
+#
+# Sleep for a second in a tmux pane and then report back to kak.
+# nop %sh(tmux send-keys -t "@1" "sleep 1" Enter " echo 'evaluate-commands -client ${kak_client} %{ echo Done }' | kak -p ${kak_session}" Enter)
+#
+# Sleep for a second in the next tmux window and then report back to kak.
+# nop %sh(tmux send-keys -t "{next}.0" "sleep 1" Enter " echo 'evaluate-commands -client ${kak_client} %{ echo Done }' | kak -p ${kak_session}" Enter)
+#
+# Repeat the previous command in the next tmux window and then report back to kak.
+# nop %sh(tmux send-keys -t "{next}.0" Up Enter " echo 'evaluate-commands -client ${kak_client} %{ echo Done }' | kak -p ${kak_session}" Enter)
+#
+# Repeat the previous command in the next tmux window and then report back to kak v2.
+# nop %sh(tmux copy-mode -t "{next}.0" ';' send-keys -t "{next}.0" -X cancel ';' send-keys -t "{next}.0" Up Enter " echo 'evaluate-commands -client ${kak_client} %{ echo Done }' | kak -p ${kak_session}" Enter)
+
 #===============================================================================
 #               Modes
 #===============================================================================
@@ -262,5 +283,15 @@ step over it.) \
         evaluate-commands %(
             tmux-send-and-capture
             execute-keys x
+        )
+    )
+
+define-command tmux-repeat-most-recent-command-in-next-window \
+    -docstring "" \
+    %(
+        nop %sh(
+            tmux copy-mode -t "{next}.0" ';' \
+                send-keys -t "{next}.0" -X cancel ';' \
+                send-keys -t "{next}.0" Up Enter " echo 'evaluate-commands -client ${kak_client} %{ echo Done }' | kak -p ${kak_session}" Enter
         )
     )

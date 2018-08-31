@@ -10,6 +10,7 @@ map global user a -docstring "Select whole object"                           %(:
 map global user b -docstring "Do a block action"                             %(:block-mode<ret>)
 map global user c -docstring "Do a character based action"                   %(:character-mode<ret>)
 map global user %(%) -docstring "Select all copies of the current selection" %(:select-all-copies<ret>)
+map global user %(<a-%>) -docstring "Select all copies of the current selection" %(:select-all-copies-boundary<ret>)
 # map global user f -docstring "Do a character based find action"              %(:find-mode<ret>)
 map global user g -docstring "A placeholder for language specific shortcuts" %(:info "Filetype %opt{filetype} lacks g shortcuts"<ret>)
 map global user i -docstring "Select inner object"                           %(:select-custom-text-object-inner-mode<ret>)
@@ -37,6 +38,7 @@ map global object o -docstring "do end block" cdo,end<ret>
 
 map global object I -docstring "indent and some" 'i<a-;>K<a-;><a-x>X'
 map global object l -docstring "line content" <esc>gi<a-l>
+map global object k -docstring "balanced paragraph" <esc>:select-balanced-paragraph<ret>
 # This is automatically there.
 # map global object $ -docstring "dollar quote string" c$,$<ret>
 
@@ -65,20 +67,8 @@ hook global WinSetOption filetype=(?!man).* %(add-highlighter window column 81 d
 hook global WinSetOption filetype=(man|) %(remove-highlighter window/hlcol_81)
 
 # TODO: Write a docstring.
-# alias global ag grep
 define-command ag -params .. %(with-selection-by-default grep %arg(@))
 
-# BUG: The following does not include the last newline: xX<a-;>K
-# Hmmm... I think it does work now at 2017-12-01.
-#
-# TODO: Put shell scripts etc in some location relative to the following,
-# and call them like: evaluate-commands "|%opt(X)/my-script.sh"
-# where X would be defined like this perhaps:
-# set-option str X %sh(echo "$kak_source")
-# nop %sh(echo "$kak_source" >>/tmp/vv.txt)
-
-# TODO: Add rc/clipboard.kak and put xclip & tmux based copying in there.
-# Make them unified in a similar way as is done in rc/block.kak.
-#
-
 define-command select-all-copies %(execute-keys %(y%s\Q<c-r>"\E<ret>))
+
+define-command select-all-copies-boundary %(execute-keys %(y%s\b\Q<c-r>"\E\b<ret>))

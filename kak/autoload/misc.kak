@@ -679,6 +679,34 @@ define-command -hidden select-indent-and-some-whole %{
     }
 }
 
+define-command select-touched-paragraphs-whole \
+    -docstring "Selects all touched whole paragraphs" \
+    %(
+        execute-keys %(<a-s><a-a>p<a-m>)
+    )
+
+define-command select-touched-paragraphs-inner \
+    -docstring "Selects all touched inner paragraphs" \
+    %(
+        execute-keys %(<a-s><a-i>p<a-m>)
+    )
+
+define-command select-nearby-matching-delimiters \
+    -docstring "Extends the selection to include all matches of all delimiters currently included in it" \
+    %(
+        # NOTE: The itersel inhibits adjacent selections from being merged
+        # unintentionally when <a-m> is executed.
+        execute-keys -itersel %(Zs[()\[\]<lt><gt>{}]<ret>M<a-z>a<a-m>)
+    )
+
+define-command select-balanced-paragraph \
+    -docstring "Selects at least a paragraph of text large enough to contain only balanced delimiters" \
+    %(
+        select-touched-paragraphs-inner
+        try %( select-nearby-matching-delimiters )
+        select-touched-paragraphs-whole
+    )
+
 define-command send-text-paragraph \
     -hidden \
     -docstring "Send paragraph to the repl pane" \

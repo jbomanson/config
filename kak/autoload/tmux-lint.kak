@@ -1,6 +1,7 @@
 # NOTE: This thing reuses lint_* options.
 
 declare-option str tmux_lint_program tmux-lint
+declare-option str tmux_lint_prompt_regex "^%sh(hostname --short) .*> "
 
 define-command tmux-lint -docstring 'Mine tmux panes in this session for lint findings' %{
     %sh(
@@ -9,6 +10,6 @@ define-command tmux-lint -docstring 'Mine tmux panes in this session for lint fi
           printf %s\\n "echo -markup '{Error}tmux-lint: Failed to find $kak_opt_tmux_lint_program (See option tmux_lint_program)'"
           exit 1
         fi
-        exec "$kak_opt_tmux_lint_program" "$kak_buflist" "$kak_client" "$kak_timestamp"
+        exec "$kak_opt_tmux_lint_program" "$kak_buflist" "$kak_client" "$kak_timestamp" "$kak_opt_tmux_lint_prompt_regex"
     )
 }

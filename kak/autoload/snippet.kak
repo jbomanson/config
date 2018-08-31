@@ -126,12 +126,64 @@ define-command snippet-cpp-class \
         selection-cycle-from-selections
     )
 
+define-command snippet-cpp-absl-str-join \
+    %(
+        execute-keys -save-regs '' \
+        %<oabsl::StrJoin(<esc>> \
+        %<ocontainer, ", ",<esc>> \
+        %<o[](string* out, const Element& element) {<esc>> \
+        %<oabsl::StrAppend(out, "'");<esc>> \
+        %<oabsl::StrAppend(out, element);<esc>> \
+        %<oabsl::StrAppend(out, "'");<esc>> \
+        %<o})<esc>> \
+        %(Z<a-?>Join<ret><a-;>scontainer|", "|Element|element<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-accumulate \
+    %(
+        execute-keys -save-regs '' \
+        %[gl"qZ] \
+        %[ostd::accumulate(input.begin(), input.end(),<esc>] \
+        %[oinit, [](const Result result, const Element& element) {<esc>] \
+        %[oreturn result;<esc>] \
+        %[o});<esc>] \
+        %[Z"q<a-z>usinput|init|Result|result|Element|element<ret><a-z>a]
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-all-of \
+    %(
+        execute-keys -save-regs '' \
+        %[gl"qZ] \
+        %[ostd::all_of(input.cbegin(), input.cend(),<esc>] \
+        %[o[](const Element& element) {<esc>] \
+        %[oreturn true;<esc>] \
+        %[o})<esc>] \
+        %[Z"q<a-z>usinput|Element|element|true<ret><a-z>a]
+        selection-cycle-from-selections
+    )
+
 define-command snippet-cpp-algorithm-copy \
     %(
         execute-keys -save-regs '' \
         %[ostd::copy(input.begin(), input.end(),<esc>] \
         %[ostd::back_inserter(output));<esc>] \
         %(Z<a-?>copy<ret><a-;>sinput|output<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-equal \
+    %(
+        execute-keys -save-regs '' \
+        %[gl"qZ] \
+        %[o(one.size() == two.size()) &&<esc>] \
+        %[ostd::equal(one.begin(), one.end(),<esc>] \
+        %[otwo.begin(), two.end(),<esc>] \
+        %[o[](const Element& a, const Element& b) {<esc>] \
+        %[oreturn a.property() == b.property();<esc>] \
+        %[o});<esc>] \
+        %[Z"q<a-z>usone|two|Element|property\(\)<ret><a-z>a]
         selection-cycle-from-selections
     )
 
@@ -154,6 +206,15 @@ define-command snippet-cpp-algorithm-sort \
         %[oreturn a.property() <lt> b.property();<esc>] \
         %[o});<esc>] \
         %(Z<a-?>sort<ret><a-;>sinput|Element|property\(\)|<lt><ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-algorithm-simple \
+    %(
+        execute-keys -save-regs '' \
+        %[gl"qZ] \
+        %[ostd::algorithm(input.begin(), input.end());<esc>] \
+        %[Z"q<a-z>usalgorithm|input<ret><a-z>a]
         selection-cycle-from-selections
     )
 
@@ -221,13 +282,47 @@ define-command snippet-cpp-algorithm-remove-if-without-remove-if \
 #         selection-cycle-from-selections
 #     )
 
+define-command snippet-cpp-algorithm-set-difference \
+    %(
+        execute-keys -save-regs '' \
+        %[gl"qZ] \
+        %[ostd::set_difference(input_one.begin(), input_one.end(),<esc>] \
+        %[oinput_two.begin(), input_two.end(),<esc>] \
+        %[ostd::back_inserter(output));<esc>] \
+        %[Z"q<a-z>usinput_one|input_two|output<ret><a-z>a]
+        selection-cycle-from-selections
+    )
+
 define-command snippet-cpp-algorithm-transform \
     %(
         execute-keys -save-regs '' \
-        %[ostd::transform(input.begin(), input.end(),<esc>] \
+        %[ostd::transform(input.cbegin(), input.cend(),<esc>] \
         %[ostd::back_inserter(output), [](const Element& element) {<esc>] \
         %[oreturn element;<esc>] \
         %[o});<esc>] \
         %(Z<a-?>transform<ret><a-;>sinput|output|Element|element<ret><a-z>a)
         selection-cycle-from-selections
     )
+
+define-command snippet-cpp-declare-operator-equality \
+    %(
+        execute-keys -save-regs '' \
+        %["qZo// Checks whether two Object objects are equal.<esc>] \
+        %[\obool operator==(const Object& one, const Object& two);<esc>] \
+        %[obool operator!=(const Object& one, const Object& two) {<esc>] \
+        %[oreturn !(one == two);<esc>] \
+        %[o}<esc>] \
+        %(Z"q<a-z>usObject|TODO<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
+define-command snippet-cpp-declare-operator-ostream \
+    %(
+        execute-keys -save-regs '' \
+        %[gl"qZ] \
+        %[\o// Prints Object in human readable form to a stream.<esc>] \
+        %[\ostd::ostream& operator<lt><lt>(std::ostream& os, const Object& object);<esc>] \
+        %(Z"q<a-z>usObject|object<ret><a-z>a)
+        selection-cycle-from-selections
+    )
+
